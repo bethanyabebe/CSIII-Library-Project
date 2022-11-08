@@ -25,6 +25,9 @@ remove_page = wx.Frame(None, -1, 'Remove Book')
 # init for app, landing page (login) & button to switch to main page
 login_panel = wx.Panel(login_page, wx.ID_ANY)
 button = wx.Button(login_panel, wx.ID_ANY, 'Login', (10, 10))
+dlg = wx.TextEntryDialog(login_page, '', caption="hi")
+dlg.ShowModal()
+
 button.Bind(wx.EVT_BUTTON, onclick(login_page, main_page))
 login_page.Show()
 login_page.Centre()
