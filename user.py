@@ -1,4 +1,6 @@
 from library import Library
+from Crypto.Cipher import AES
+from Crypto.Util.Padding import pad, unpad
 
 
 class User(Library):
@@ -9,6 +11,18 @@ class User(Library):
 
     @staticmethod
     def check_user(user, password):
-        # validates user/pass if in system
-        pass
+        key = b'CFC)H@ERVvcQtTnr'
 
+        def encrypt(msg):
+            e_cipher = AES.new(key, AES.MODE_ECB)
+            encrypted = e_cipher.encrypt(pad(msg.encode(), 32))
+            return encrypted.hex()
+
+        infile = open("user.txt")
+        for line in infile:
+            temp = line.strip("\n")
+            print(str(temp.split(",")[1]))
+            print(str(encrypt(password)))
+            if temp.split(",")[0] == user and str(temp.split(",")[1]) == str(encrypt(password)):
+                return True
+        return False

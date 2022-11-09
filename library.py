@@ -1,3 +1,6 @@
+import datetime
+
+
 class Library:
     def __init__(self):
         pass
@@ -21,7 +24,53 @@ class Library:
         pass
 
     @staticmethod
-    def rent_book(title, student_name):
-        # Adds the student name, rental date and return date to a given title only if the title can be rented
-        # use update_rental from book.py
-        pass
+    def rent_book(isbn, name):
+        # Updates the return date by 30 days from rented date (first rental) or 14 days
+        # from return date (second rental) - book should not be returned past this point
+        infile = open("books.txt")
+        current_time = datetime.datetime.now().strftime('%m/%d/%Y')
+        for line in infile:
+            temp = line.strip("\n")
+            curr_line = temp.split(",")
+            line_len = len(curr_line)
+            if curr_line[2] == isbn:
+                if line_len == 3:
+                    return_date = datetime.datetime.now() + datetime.timedelta(30)
+                    update_book(temp, name, current_time, return_date.strftime('%m/%d/%Y'))
+                    return 1
+                if line_len == 6:
+                    # if date gap = 30, name curr date curr date + 14
+                    date_format = "%m/%d/%Y"
+                    a = datetime.datetime.strptime(curr_line[4], date_format)
+                    b = datetime.datetime.strptime(curr_line[5], date_format)
+                    delta = b - a
+                    if int(str(delta)[0:2]) == 30 and curr_line[3] == name:
+                        return_date = datetime.datetime.now() + datetime.timedelta(14)
+                        update_book(temp, name, current_time, return_date.strftime('%m/%d/%Y'))
+                        return 1
+                    if curr_line[3] != name:
+                        return 4
+                    if int(str(delta)[0:2]) == 14:
+                        return 3
+        return 2
+
+
+def update_book(old_line, name, rented_date, return_date):
+    with open("books.txt", "r") as f:
+        lines = f.readlines()
+    with open("books.txt", "w") as f:
+        for line in lines:
+            if line.strip("\n") not in old_line:
+                f.write(line)
+    f.close()
+    book_arr = old_line.split(",")
+    if len(book_arr) == 3:
+        book_arr.append(name)
+        book_arr.append(rented_date)
+        book_arr.append(return_date)
+    else:
+        book_arr[3] = name
+        book_arr[4] = rented_date
+        book_arr[5] = return_date
+    with open('books.txt', 'a+') as f:
+        f.write(book_arr[0] + "," + book_arr[1] + "," + book_arr[2] + "," + book_arr[3] + "," + book_arr[4] + "," + book_arr[5] + "\n")

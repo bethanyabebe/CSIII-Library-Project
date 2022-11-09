@@ -19,8 +19,3 @@ class Book(Library):
 
     def get_return_date(self):
         return self.return_date
-
-    def update_rental(self):
-        # Updates the return date by 30 days from rented date (first rental) or 14 days
-        # from return date (second rental) - book should not be returned past this point
-        pass
