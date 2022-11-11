@@ -1,14 +1,23 @@
 import datetime
 
-
 class Library:
     def __init__(self):
         pass
 
-    def add_book(self, book_title, book_author, book_isbn, renter_name=None, rented_date=None, return_date=None):
-        # Creates a new Book (only title and author are required to add a book to the library)
-        # Adds Book to file
-        pass
+    @staticmethod
+    def add_book(event, book_title, book_author, book_isbn, renter_name, rented_date=None, return_date=None):
+        if renter_name != "":
+            rented_date = datetime.datetime.now().strftime('%m/%d/%Y')
+            return_date = datetime.datetime.now() + datetime.timedelta(30)
+            #new_book = Book(book_title, book_author, book_isbn, renter_name, rented_date, return_date)
+            file = open('books.txt', 'a+')
+            file.write(book_title + "," + book_author + "," + book_isbn + renter_name + rented_date + return_date + '\n')
+            file.close()
+        else:
+            #new_book = Book(book_title, book_author, book_isbn, renter_name, rented_date, return_date)
+            file = open('books.txt', 'a+')
+            file.write(book_title + "," + book_author + "," + book_isbn + '\n')
+            file.close()
 
     @staticmethod
     def search_book(key, query):

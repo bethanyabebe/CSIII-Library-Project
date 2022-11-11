@@ -1,5 +1,6 @@
 # to install: pip install -U wxPython
 import wx
+import datetime
 from user import User
 from library import Library
 
@@ -19,8 +20,7 @@ def hide_obj(obj):
 # function for checking login
 def check_login(u, p):
     def validation(event):
-        # result = User.check_user(u.GetValue(), p.GetValue())
-        result = True
+        result = User.check_user(u.GetValue(), p.GetValue())
         if result:
             wrong_login.Hide()
             login_page.Hide()
@@ -45,7 +45,7 @@ remove_page = wx.Frame(None, -1, 'Remove Book')
 
 # init for app, landing page (login) & button to switch to main page
 login_panel = wx.Panel(login_page, wx.ID_ANY)
-titleLabel = wx.StaticText(login_panel, -1, 'Librarian Login', (147, 10))
+titleLabel = wx.StaticText(login_panel, -1, 'Librarian Login (temp: jadams, trimtop123)', (147, 10))
 userLabel = wx.StaticText(login_panel, -1, 'Username', (160, 40))
 username = wx.TextCtrl(login_panel, wx.ID_ANY, '', (132, 60))
 passLabel = wx.StaticText(login_panel, -1, 'Password', (160, 90))
@@ -71,9 +71,33 @@ selection_remove.Bind(wx.EVT_BUTTON, onclick(main_page, remove_page))
 selection_logout.Bind(wx.EVT_BUTTON, onclick(main_page, login_page))
 
 # add page
+def new_book(book_title, book_author, book_isbn, renter_name):
+    def adding(event):
+        if renter_name.GetValue() != "":
+            rented_date = datetime.datetime.now().strftime('%m/%d/%Y')
+            return_date = datetime.datetime.now() + datetime.timedelta(30)
+            file = open('books.txt', 'a+')
+            file.write(book_title.GetValue() + "," + book_author.GetValue() + "," + book_isbn.GetValue() + "," + renter_name.GetValue() + "," + str(rented_date) + "," + return_date.strftime('%m/%d/%Y') + '\n')
+            file.close()
+        else:
+            file = open('books.txt', 'a+')
+            file.write(book_title + "," + book_author + "," + book_isbn + '\n')
+            file.close()
+    return adding
+
 add_panel = wx.Panel(add_page, wx.ID_ANY)
-add_book = wx.Button(add_panel, wx.ID_ANY, 'Add Book', (10, 10))
-add_book.Bind(wx.EVT_BUTTON, onclick(add_page, main_page))
+added_name = wx.StaticText(add_panel, wx.ID_ANY, 'Book Title:', (150, 10))
+name = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 30))
+added_author = wx.StaticText(add_panel, wx.ID_ANY, 'Book Author:', (150, 55))
+author = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 80))
+added_isbn = wx.StaticText(add_panel, wx.ID_ANY, 'Book ISBN:', (150, 110))
+book_isbn = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 130))
+added_renter = wx.StaticText(add_panel, wx.ID_ANY, '(Optional) Renter Name:', (120, 150))
+book_renter = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 170))
+add_book = wx.Button(add_panel, wx.ID_ANY, 'Add Book', (150, 190))
+add_book.Bind(wx.EVT_BUTTON, new_book(name, author, book_isbn, book_renter))
+return_menu = wx.Button(add_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
+return_menu.Bind(wx.EVT_BUTTON, onclick(add_page, main_page))
 
 # rent page
 def check_rent(isbn):
