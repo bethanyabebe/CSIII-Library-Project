@@ -75,6 +75,10 @@ selection_logout.Bind(wx.EVT_BUTTON, onclick(main_page, login_page))
 # add page
 def new_book(book_title, book_author, book_isbn, renter_name):
     def adding(event):
+        if book_title.GetValue() == "" or book_author.GetValue() == "" or book_isbn.GetValue() == "":
+            add_unsuccessful.Show()
+            wx.CallLater(3000, hide_obj, add_unsuccessful)
+            return
         if renter_name.GetValue() != "":
             rented_date = datetime.datetime.now().strftime('%m/%d/%Y')
             return_date = datetime.datetime.now() + datetime.timedelta(30)
@@ -83,8 +87,11 @@ def new_book(book_title, book_author, book_isbn, renter_name):
             file.close()
         else:
             file = open('books.txt', 'a+')
-            file.write(book_title + "," + book_author + "," + book_isbn + '\n')
+            file.write(book_title.GetValue() + "," + book_author.GetValue() + "," + book_isbn.GetValue() + '\n')
             file.close()
+        add_successful.Show()
+        wx.CallLater(3000, hide_obj, add_successful)
+        return
     return adding
 
 
@@ -92,13 +99,17 @@ add_panel = wx.Panel(add_page, wx.ID_ANY)
 added_name = wx.StaticText(add_panel, wx.ID_ANY, 'Book Title:', (150, 10))
 name = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 30))
 added_author = wx.StaticText(add_panel, wx.ID_ANY, 'Book Author:', (150, 55))
-author = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 80))
-added_isbn = wx.StaticText(add_panel, wx.ID_ANY, 'Book ISBN:', (150, 110))
-book_isbn = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 130))
-added_renter = wx.StaticText(add_panel, wx.ID_ANY, '(Optional) Renter Name:', (120, 150))
-book_renter = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 170))
-add_book = wx.Button(add_panel, wx.ID_ANY, 'Add Book', (150, 190))
+author = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 75))
+added_isbn = wx.StaticText(add_panel, wx.ID_ANY, 'Book ISBN:', (150, 100))
+book_isbn = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 117))
+added_renter = wx.StaticText(add_panel, wx.ID_ANY, '(Optional) Renter Name:', (120, 140))
+book_renter = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 160))
+add_book = wx.Button(add_panel, wx.ID_ANY, 'Add Book', (150, 187))
 add_book.Bind(wx.EVT_BUTTON, new_book(name, author, book_isbn, book_renter))
+add_unsuccessful = wx.StaticText(add_panel, wx.ID_ANY, 'Error - Missing required field', (110, 210))
+add_successful = wx.StaticText(add_panel, wx.ID_ANY, 'Book added successfully', (120, 210))
+add_unsuccessful.Hide()
+add_successful.Hide()
 return_menu = wx.Button(add_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 return_menu.Bind(wx.EVT_BUTTON, onclick(add_page, main_page))
 
@@ -142,12 +153,12 @@ to_menu.Bind(wx.EVT_BUTTON, onclick(rent_page, main_page))
 
 # search page
 search_panel = wx.Panel(search_page, wx.ID_ANY)
-search_book = wx.Button(search_panel, wx.ID_ANY, 'Search Book', (10, 10))
+search_book = wx.Button(search_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 search_book.Bind(wx.EVT_BUTTON, onclick(search_page, main_page))
 
 # remove page
 remove_panel = wx.Panel(remove_page, wx.ID_ANY)
-remove_book = wx.Button(remove_panel, wx.ID_ANY, 'Remove Book', (10, 10))
+remove_book = wx.Button(remove_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 remove_book.Bind(wx.EVT_BUTTON, onclick(remove_page, main_page))
 
 # runs program - keep as last line
