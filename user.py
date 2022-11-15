@@ -21,8 +21,6 @@ class User(Library):
         infile = open("user.txt")
         for line in infile:
             temp = line.strip("\n")
-            print(str(temp.split(",")[1]))
-            print(str(encrypt(password)))
             if temp.split(",")[0] == user and str(temp.split(",")[1]) == str(encrypt(password)):
                 return True
         return False

@@ -1,5 +1,6 @@
 import datetime
 
+
 class Library:
     def __init__(self):
         pass
@@ -9,12 +10,10 @@ class Library:
         if renter_name != "":
             rented_date = datetime.datetime.now().strftime('%m/%d/%Y')
             return_date = datetime.datetime.now() + datetime.timedelta(30)
-            #new_book = Book(book_title, book_author, book_isbn, renter_name, rented_date, return_date)
             file = open('books.txt', 'a+')
             file.write(book_title + "," + book_author + "," + book_isbn + renter_name + rented_date + return_date + '\n')
             file.close()
         else:
-            #new_book = Book(book_title, book_author, book_isbn, renter_name, rented_date, return_date)
             file = open('books.txt', 'a+')
             file.write(book_title + "," + book_author + "," + book_isbn + '\n')
             file.close()

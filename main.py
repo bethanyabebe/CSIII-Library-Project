@@ -13,6 +13,7 @@ def onclick(page1, page2):
         page2.Centre()
     return switch_pages
 
+
 def hide_obj(obj):
     obj.Hide()
 
@@ -70,6 +71,7 @@ selection_search.Bind(wx.EVT_BUTTON, onclick(main_page, search_page))
 selection_remove.Bind(wx.EVT_BUTTON, onclick(main_page, remove_page))
 selection_logout.Bind(wx.EVT_BUTTON, onclick(main_page, login_page))
 
+
 # add page
 def new_book(book_title, book_author, book_isbn, renter_name):
     def adding(event):
@@ -85,6 +87,7 @@ def new_book(book_title, book_author, book_isbn, renter_name):
             file.close()
     return adding
 
+
 add_panel = wx.Panel(add_page, wx.ID_ANY)
 added_name = wx.StaticText(add_panel, wx.ID_ANY, 'Book Title:', (150, 10))
 name = wx.TextCtrl(add_panel, wx.ID_ANY, '', (130, 30))
@@ -98,6 +101,7 @@ add_book = wx.Button(add_panel, wx.ID_ANY, 'Add Book', (150, 190))
 add_book.Bind(wx.EVT_BUTTON, new_book(name, author, book_isbn, book_renter))
 return_menu = wx.Button(add_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 return_menu.Bind(wx.EVT_BUTTON, onclick(add_page, main_page))
+
 
 # rent page
 def check_rent(isbn):
