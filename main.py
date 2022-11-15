@@ -45,7 +45,7 @@ remove_page = wx.Frame(None, -1, 'Remove Book')
 
 # init for app, landing page (login) & button to switch to main page
 login_panel = wx.Panel(login_page, wx.ID_ANY)
-titleLabel = wx.StaticText(login_panel, -1, 'Librarian Login (temp: jadams, trimtop123)', (147, 10))
+titleLabel = wx.StaticText(login_panel, -1, 'Librarian Login', (147, 10))
 userLabel = wx.StaticText(login_panel, -1, 'Username', (160, 40))
 username = wx.TextCtrl(login_panel, wx.ID_ANY, '', (132, 60))
 passLabel = wx.StaticText(login_panel, -1, 'Password', (160, 90))
