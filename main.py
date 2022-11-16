@@ -152,9 +152,32 @@ to_menu = wx.Button(rent_panel, wx.ID_ANY, 'Return to Menu', (10, 170))
 to_menu.Bind(wx.EVT_BUTTON, onclick(rent_page, main_page))
 
 # search page
+def find_book(title_key,author_key, isbn_key):
+    def searching(event):
+        if title_key.GetValue() != "" or author_key.GetValue()!= "" or isbn_key.GetValue() != "":
+            with open("books.txt",  "r") as inp:
+                for line in enumerate(inp):
+                    if title_key.GetValue() in line or  author_key.GetValue() in line  or isbn_key.GetValue() in line:
+                        return line  
+        else:
+            search_unsuccessful.Show()
+            wx.CallLater(3000, hide_obj, search_unsuccessful)
+
 search_panel = wx.Panel(search_page, wx.ID_ANY)
 search_book = wx.Button(search_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 search_book.Bind(wx.EVT_BUTTON, onclick(search_page, main_page))
+searchby_author = wx.Button(search_panel, wx.ID_ANY, 'Author', (10, 10))
+searchby_isbn = wx.Button(search_panel, wx.ID_ANY, 'Title', (10, 10))
+searchby_title = wx.Button(search_panel, wx.ID_ANY, 'ISBN', (10, 10))
+search_label = wx.StaticText(search_panel, wx.ID_ANY, 'Enter the Book Name, Author Name or ISBN: ', (130, 70))
+title_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
+author_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
+isbn_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
+searchby_author.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
+searchby_isbn.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
+searchby_title.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
+search_unsuccessful = wx.StaticText(search_panel, wx.ID_ANY, 'Error - Book not found', (120, 210))   
+search_unsuccessful.Hide()
 
 # remove page
 def delete_book(isbn):
@@ -167,7 +190,7 @@ def delete_book(isbn):
                         removal_successful.Show()
                         wx.CallLater(3000, hide_obj, removal_successful)
                     else:
-                        removal_unsuccessful.Hide()
+                        removal_unsuccessful.Show()
                         wx.CallLater(3000, hide_obj, removal_unsuccessful)
                         
         os.replace('temp.txt', 'books.txt')
