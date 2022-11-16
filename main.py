@@ -157,9 +157,31 @@ search_book = wx.Button(search_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 search_book.Bind(wx.EVT_BUTTON, onclick(search_page, main_page))
 
 # remove page
+def delete_book(isbn):
+    def removing(event):
+        with open("books.txt",  "r") as inp:
+            with open("books.txt", "w") as output:
+                for line in inp:
+                    if isbn.GetValue() not in line.strip("\n"):
+                        output.write(line)
+                        removal_successful.Show()
+                        wx.CallLater(3000, hide_obj, removal_successful)
+                    else:
+                        removal_unsuccessful.Hide()
+                        wx.CallLater(3000, hide_obj, removal_unsuccessful)
+                        
+        os.replace('temp.txt', 'books.txt')
+    return removing
+            
+            
 remove_panel = wx.Panel(remove_page, wx.ID_ANY)
 remove_book = wx.Button(remove_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 remove_book.Bind(wx.EVT_BUTTON, onclick(remove_page, main_page))
+removal_successful = wx.StaticText(add_panel, wx.ID_ANY, 'Book removed successfully', (120, 210))
+removal_unsuccessful = wx.StaticText(add_panel, wx.ID_ANY, 'Error - ISBN not found', (120, 210))
+removal_unsuccessful.Hide()
+removal_successful.Hide()
+
 
 # runs program - keep as last line
 app.MainLoop()
