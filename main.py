@@ -63,11 +63,11 @@ login_page.Centre()
 
 # main page
 main_panel = wx.Panel(main_page, wx.ID_ANY)
-selection_add = wx.Button(main_panel, wx.ID_ANY, 'Add Book', (10, 10))
-selection_rent = wx.Button(main_panel, wx.ID_ANY, 'Rent Book', (10, 40))
-selection_search = wx.Button(main_panel, wx.ID_ANY, 'Search Book', (10, 70))
-selection_remove = wx.Button(main_panel, wx.ID_ANY, 'Remove Book', (10, 100))
-selection_logout = wx.Button(main_panel, wx.ID_ANY, 'Logout', (10, 130))
+selection_add = wx.Button(main_panel, wx.ID_ANY, 'Add Book', (150, 20))
+selection_rent = wx.Button(main_panel, wx.ID_ANY, 'Rent Book', (150, 50))
+selection_search = wx.Button(main_panel, wx.ID_ANY, 'Search Book', (145, 80))
+selection_remove = wx.Button(main_panel, wx.ID_ANY, 'Remove Book', (140, 110))
+selection_logout = wx.Button(main_panel, wx.ID_ANY, 'Logout', (10, 150))
 selection_add.Bind(wx.EVT_BUTTON, onclick(main_page, add_page))
 selection_rent.Bind(wx.EVT_BUTTON, onclick(main_page, rent_page))
 selection_search.Bind(wx.EVT_BUTTON, onclick(main_page, search_page))
@@ -164,13 +164,11 @@ def find_book(search_key, parse_num):
             with open("books.txt",  "r") as inp:
                 for line in enumerate(inp):
                     curr_line = line[1].split(",")
-                    print(curr_line)
                     if len(curr_line) > 1 and search_key.GetValue() == curr_line[parse_num-1]:
                         is_found = True
                         found_books.append(curr_line)
             if is_found is True:
                 i = 10
-                print(found_books)
                 for b in range(0, len(found_books)):
                     book = wx.StaticText(search_results_panel, wx.ID_ANY, str(found_books[b]), (0, i))
                     i += 20
@@ -202,6 +200,7 @@ search_unsuccessful2.Hide()
 
 search_results_panel = wx.Panel(search_results_page, wx.ID_ANY)
 
+
 # remove page
 def delete_book(isbn):
     def removing(event):
@@ -209,7 +208,6 @@ def delete_book(isbn):
         with open("books.txt", "r") as inp:
             for line in enumerate(inp):
                 curr_line = line[1].split(",")
-                print(curr_line)
                 if len(curr_line) > 1 and isbn.GetValue() == curr_line[2]:
                     is_found = True
         if is_found is True:
