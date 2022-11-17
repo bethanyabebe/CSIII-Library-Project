@@ -1,4 +1,5 @@
 import datetime
+import os
 
 
 class Library:
@@ -66,9 +67,12 @@ class Library:
                         update_book(temp, name, current_time, return_date.strftime('%m/%d/%Y'))
                         return 1
                     if curr_line[3] != name:
+                        infile.close()
                         return 4
                     if int(str(delta)[0:2]) == 14:
+                        infile.close()
                         return 3
+        infile.close()
         return 2
 
 
@@ -91,3 +95,4 @@ def update_book(old_line, name, rented_date, return_date):
         book_arr[5] = return_date
     with open('books.txt', 'a+') as f:
         f.write(book_arr[0] + "," + book_arr[1] + "," + book_arr[2] + "," + book_arr[3] + "," + book_arr[4] + "," + book_arr[5] + "\n")
+        f.close()

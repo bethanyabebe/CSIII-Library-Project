@@ -1,4 +1,6 @@
 # to install: pip install -U wxPython
+import os
+
 import wx
 import datetime
 from user import User
@@ -21,8 +23,7 @@ def hide_obj(obj):
 # function for checking login
 def check_login(u, p):
     def validation(event):
-        # result = User.check_user(u.GetValue(), p.GetValue())
-        result = True
+        result = User.check_user(u.GetValue(), p.GetValue())
         if result:
             wrong_login.Hide()
             login_page.Hide()
@@ -153,6 +154,7 @@ rent_unsuccessful_3.Hide()
 to_menu = wx.Button(rent_panel, wx.ID_ANY, 'Return to Menu', (10, 170))
 to_menu.Bind(wx.EVT_BUTTON, onclick(rent_page, main_page))
 
+
 # search page
 def find_book(search_key, parse_num):
     def searching(event):
@@ -203,26 +205,38 @@ search_results_panel = wx.Panel(search_results_page, wx.ID_ANY)
 # remove page
 def delete_book(isbn):
     def removing(event):
-        with open("books.txt",  "r") as inp:
-            with open("books.txt", "w") as output:
-                for line in inp:
-                    if isbn.GetValue() not in line.strip("\n"):
-                        output.write(line)
-                        removal_successful.Show()
-                        wx.CallLater(3000, hide_obj, removal_successful)
-                    else:
-                        removal_unsuccessful.Show()
-                        wx.CallLater(3000, hide_obj, removal_unsuccessful)
-                        
-        os.replace('temp.txt', 'books.txt')
+        is_found = False
+        with open("books.txt", "r") as inp:
+            for line in enumerate(inp):
+                curr_line = line[1].split(",")
+                if isbn.GetValue() == curr_line[2]:
+                    is_found = True
+        if is_found is True:
+            lines = []
+            with open("books.txt",  "r") as inp:
+                lines = inp.readlines()
+            with open("books.txt", "w") as inp:
+                for line in enumerate(lines):
+                    curr_line = line[1].split(",")
+                    if isbn.GetValue() != curr_line[2]:
+                        inp.write(line[1])
+            removal_successful.Show()
+            wx.CallLater(3000, hide_obj, removal_successful)
+        else:
+            removal_unsuccessful.Show()
+            wx.CallLater(3000, hide_obj, removal_unsuccessful)
     return removing
             
             
 remove_panel = wx.Panel(remove_page, wx.ID_ANY)
 remove_book = wx.Button(remove_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 remove_book.Bind(wx.EVT_BUTTON, onclick(remove_page, main_page))
-removal_successful = wx.StaticText(add_panel, wx.ID_ANY, 'Book removed successfully', (120, 210))
-removal_unsuccessful = wx.StaticText(add_panel, wx.ID_ANY, 'Error - ISBN not found', (120, 210))
+remove_label = wx.StaticText(remove_panel, wx.ID_ANY, 'Enter the ISBN of title to remove: ', (110, 50))
+remove_isbn = wx.TextCtrl(remove_panel, wx.ID_ANY, '', (140, 70))
+delete_button = wx.Button(remove_panel, wx.ID_ANY, 'Remove Book', (145, 100))
+delete_button.Bind(wx.EVT_BUTTON, delete_book(remove_isbn))
+removal_successful = wx.StaticText(remove_panel, wx.ID_ANY, 'Book removed successfully', (120, 130))
+removal_unsuccessful = wx.StaticText(remove_panel, wx.ID_ANY, 'Error - ISBN not found', (130, 130))
 removal_unsuccessful.Hide()
 removal_successful.Hide()
 
