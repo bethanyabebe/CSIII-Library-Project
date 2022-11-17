@@ -21,7 +21,8 @@ def hide_obj(obj):
 # function for checking login
 def check_login(u, p):
     def validation(event):
-        result = User.check_user(u.GetValue(), p.GetValue())
+        # result = User.check_user(u.GetValue(), p.GetValue())
+        result = True
         if result:
             wrong_login.Hide()
             login_page.Hide()
@@ -42,6 +43,7 @@ main_page = wx.Frame(None, -1, 'Library Database - Main Page')
 add_page = wx.Frame(None, -1, 'Add Book')
 rent_page = wx.Frame(None, -1, 'Rent Book')
 search_page = wx.Frame(None, -1, 'Search Books')
+search_results_page = wx.Frame(None, -1, 'Search Books')
 remove_page = wx.Frame(None, -1, 'Remove Book')
 
 # init for app, landing page (login) & button to switch to main page
@@ -152,32 +154,51 @@ to_menu = wx.Button(rent_panel, wx.ID_ANY, 'Return to Menu', (10, 170))
 to_menu.Bind(wx.EVT_BUTTON, onclick(rent_page, main_page))
 
 # search page
-def find_book(title_key,author_key, isbn_key):
+def find_book(search_key, parse_num):
     def searching(event):
-        if title_key.GetValue() != "" or author_key.GetValue()!= "" or isbn_key.GetValue() != "":
+        is_found = False
+        found_books = []
+        if search_key.GetValue() != "":
             with open("books.txt",  "r") as inp:
                 for line in enumerate(inp):
-                    if title_key.GetValue() in line or  author_key.GetValue() in line  or isbn_key.GetValue() in line:
-                        return line  
+                    curr_line = line[1].split(",")
+                    print(curr_line)
+                    if search_key.GetValue() in curr_line[parse_num-1]:
+                        is_found = True
+                        found_books.append(curr_line)
+            if is_found is True:
+                i = 10
+                print(found_books)
+                for b in range(0, len(found_books)):
+                    book = wx.StaticText(search_results_panel, wx.ID_ANY, str(found_books[b]), (0, i))
+                    i += 20
+                search_results_page.Show()
+            else:
+                search_unsuccessful2.Show()
+                wx.CallLater(3000, hide_obj, search_unsuccessful2)
         else:
             search_unsuccessful.Show()
             wx.CallLater(3000, hide_obj, search_unsuccessful)
+    return searching
+
 
 search_panel = wx.Panel(search_page, wx.ID_ANY)
 search_book = wx.Button(search_panel, wx.ID_ANY, 'Return to Menu', (10, 10))
 search_book.Bind(wx.EVT_BUTTON, onclick(search_page, main_page))
-searchby_author = wx.Button(search_panel, wx.ID_ANY, 'Author', (10, 10))
-searchby_isbn = wx.Button(search_panel, wx.ID_ANY, 'Title', (10, 10))
-searchby_title = wx.Button(search_panel, wx.ID_ANY, 'ISBN', (10, 10))
-search_label = wx.StaticText(search_panel, wx.ID_ANY, 'Enter the Book Name, Author Name or ISBN: ', (130, 70))
-title_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
-author_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
-isbn_key = wx.TextCtrl(rent_panel, wx.ID_ANY, '', (130, 70))
-searchby_author.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
-searchby_isbn.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
-searchby_title.Bind(wx.EVT_BUTTON, find_book(title_key,author_key, isbn_key))
-search_unsuccessful = wx.StaticText(search_panel, wx.ID_ANY, 'Error - Book not found', (120, 210))   
+search_label = wx.StaticText(search_panel, wx.ID_ANY, 'Enter the Book Name, Author Name or ISBN: ', (80, 50))
+search_key = wx.TextCtrl(search_panel, wx.ID_ANY, '', (140, 70))
+searchby_title = wx.Button(search_panel, wx.ID_ANY, 'Search Title', (60, 100))
+searchby_author = wx.Button(search_panel, wx.ID_ANY, 'Search Author', (145, 100))
+searchby_isbn = wx.Button(search_panel, wx.ID_ANY, 'Search ISBN', (240, 100))
+searchby_title.Bind(wx.EVT_BUTTON, find_book(search_key, 1))
+searchby_author.Bind(wx.EVT_BUTTON, find_book(search_key, 2))
+searchby_isbn.Bind(wx.EVT_BUTTON, find_book(search_key, 3))
+search_unsuccessful = wx.StaticText(search_panel, wx.ID_ANY, 'Error - Enter a search key', (120, 130))
 search_unsuccessful.Hide()
+search_unsuccessful2 = wx.StaticText(search_panel, wx.ID_ANY, 'Error - Book not found', (120, 130))
+search_unsuccessful2.Hide()
+
+search_results_panel = wx.Panel(search_results_page, wx.ID_ANY)
 
 # remove page
 def delete_book(isbn):
