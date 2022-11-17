@@ -165,7 +165,7 @@ def find_book(search_key, parse_num):
                 for line in enumerate(inp):
                     curr_line = line[1].split(",")
                     print(curr_line)
-                    if search_key.GetValue() in curr_line[parse_num-1]:
+                    if len(curr_line) > 1 and search_key.GetValue() in curr_line[parse_num-1]:
                         is_found = True
                         found_books.append(curr_line)
             if is_found is True:
@@ -209,7 +209,8 @@ def delete_book(isbn):
         with open("books.txt", "r") as inp:
             for line in enumerate(inp):
                 curr_line = line[1].split(",")
-                if isbn.GetValue() == curr_line[2]:
+                print(curr_line)
+                if len(curr_line) > 1 and isbn.GetValue() == curr_line[2]:
                     is_found = True
         if is_found is True:
             lines = []
